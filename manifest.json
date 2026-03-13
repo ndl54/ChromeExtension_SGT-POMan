@@ -1,11 +1,13 @@
 ﻿{
   "manifest_version": 3,
   "name": "SGT POMan",
-  "version": "26.1.15",
+  "version": "26.3.13",
+  "version_name": "v26.3.13",
   "description": "Tiện ích mở rộng Chrome cho POMAN (Người tạo phiếu nhập hàng)\nfb.com/ndl54",
   "author": "Nguyễn Đình Lộc (NDL54)",
   "permissions": [
     "activeTab",
+    "sidePanel",
     "storage",
     "scripting"
   ],
@@ -19,14 +21,20 @@
       "css": ["content.css"]
     }
   ],
+  "background": {
+    "service_worker": "service-worker.js"
+  },
   "action": {
-    "default_popup": "popup.html",
+    "default_title": "Mo SGT POMan",
     "default_icon": {
       "16": "/images/icon16.png",
       "32": "/images/icon32.png",
       "48": "/images/icon48.png",
       "128": "/images/icon128.png"
     }
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
   },
   "icons": {
     "16": "/images/icon16.png",
