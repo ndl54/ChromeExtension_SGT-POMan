@@ -20,12 +20,10 @@ const PARTNER_SUGGESTION_LIMIT = 80;
 const SUPPLIER_SUGGESTION_LIMIT = 80;
 const PRODUCT_SUGGESTION_LIMIT = 80;
 const ACTIVATION_OPTIONS = [
+    'Đúng tuyến',
+    'Trái tuyến',
     'Còn Kích',
     'Hết Kích',
-    'Còn Kích, còn Urbox',
-    'Còn Kích, hết Urbox',
-    'Hết Kích, còn Urbox',
-    'Hết Kích, hết Urbox',
     'Còn Vip/Tích Lũy, còn Kích',
     'Hết Vip/Tích Lũy, còn Kích',
     'Hết Vip/Tích Lũy, hết Kích',
@@ -160,6 +158,10 @@ function addProductStatusRow(elements, options = {}) {
                 ${buildActivationOptionsMarkup()}
             </select>
         </div>
+        <label class="product-urbox-toggle">
+            <input type="checkbox" class="product-urbox-checkbox">
+            <span>Urbox</span>
+        </label>
         <button type="button" class="mini-ghost-button product-status-remove">Xóa</button>
     `;
 
@@ -251,11 +253,15 @@ function restoreFromText(elements) {
 
         const codeInput = row.querySelector('.product-code-input');
         const statusSelect = row.querySelector('.product-status-select');
+        const urboxCheckbox = row.querySelector('.product-urbox-checkbox');
         if (codeInput) {
             codeInput.value = entry.productCode;
         }
         if (statusSelect) {
             statusSelect.value = entry.status;
+        }
+        if (urboxCheckbox) {
+            urboxCheckbox.checked = entry.hasUrbox;
         }
     });
 
@@ -473,20 +479,55 @@ function parseRestoredProductLine(line) {
     const statusRaw = cleanedLine.slice(separatorIndex + 3).trim();
     const resolvedStatus = resolveActivationStatus(statusRaw);
 
-    if (!productCodeRaw || !resolvedStatus) {
+    if (!productCodeRaw || !resolvedStatus.status) {
         return null;
     }
 
     return {
         productCode: resolveProductCode(productCodeRaw),
-        status: resolvedStatus
+        status: resolvedStatus.status,
+        hasUrbox: resolvedStatus.hasUrbox
     };
 }
 
 function resolveActivationStatus(inputValue) {
     const normalized = normalizePartnerValue(inputValue);
+    if (!normalized) {
+        return {
+            status: '',
+            hasUrbox: false
+        };
+    }
+
     const matchedStatus = ACTIVATION_OPTIONS.find((status) => normalizePartnerValue(status) === normalized);
-    return matchedStatus || '';
+    if (matchedStatus) {
+        return {
+            status: matchedStatus,
+            hasUrbox: false
+        };
+    }
+
+    const urboxMatch = normalized.match(/^(.*),\s*(con urbox|het urbox|urbox)$/);
+    if (!urboxMatch) {
+        return {
+            status: '',
+            hasUrbox: false
+        };
+    }
+
+    const baseStatus = urboxMatch[1].trim();
+    const matchedBaseStatus = ACTIVATION_OPTIONS.find((status) => normalizePartnerValue(status) === baseStatus);
+    if (!matchedBaseStatus) {
+        return {
+            status: '',
+            hasUrbox: false
+        };
+    }
+
+    return {
+        status: matchedBaseStatus,
+        hasUrbox: urboxMatch[2] !== 'het urbox'
+    };
 }
 
 function parseRestoredFooterLine(line) {
@@ -624,7 +665,7 @@ function refreshPartnerData(elements) {
             return response.text();
         })
         .then((csvText) => {
-            const records = parseCsvRecords(csvText, ['ma', 'madoitac', 'code'], normalizePartnerValue);
+            const records = sanitizePartnerRecords(parseCsvRecords(csvText, ['ma', 'madoitac', 'code'], normalizePartnerValue));
             if (!records.length) {
                 throw new Error('Dữ liệu đối tác trống');
             }
@@ -724,7 +765,7 @@ function fetchLocalPartnerCsv(elements) {
             return response.text();
         })
         .then((csvText) => {
-            const records = parseCsvRecords(csvText, ['ma', 'madoitac', 'code'], normalizePartnerValue);
+            const records = sanitizePartnerRecords(parseCsvRecords(csvText, ['ma', 'madoitac', 'code'], normalizePartnerValue));
             if (!records.length) {
                 throw new Error('File đối tác trống');
             }
@@ -789,7 +830,7 @@ function fetchLocalProductCsv(elements) {
 }
 
 function setPartnerRecords(records, elements) {
-    partnerRecords = sortRecordsByLabel(records, 'name').map((record) => ({
+    partnerRecords = sortRecordsByLabel(sanitizePartnerRecords(records), 'name').map((record) => ({
         ...record,
         normalizedCode: normalizePartnerValue(record.code),
         normalizedName: normalizePartnerValue(record.name),
@@ -824,6 +865,11 @@ function buildPartnerIndex(records) {
 
 function renderPartnerOptions(listElement, records, inputValue) {
     const normalizedInput = normalizePartnerValue(inputValue || '');
+    if (!shouldRenderSuggestions(normalizedInput)) {
+        renderDatalistOptions(listElement, []);
+        return;
+    }
+
     const matches = getPartnerMatches(records, normalizedInput)
         .slice(0, PARTNER_SUGGESTION_LIMIT);
 
@@ -865,6 +911,11 @@ function buildSupplierIndex(records) {
 
 function renderSupplierOptions(listElement, records, inputValue) {
     const normalizedInput = normalizeSupplierValue(inputValue || '');
+    if (!shouldRenderSuggestions(normalizedInput)) {
+        renderDatalistOptions(listElement, []);
+        return;
+    }
+
     const matches = getSupplierMatches(records, normalizedInput)
         .slice(0, SUPPLIER_SUGGESTION_LIMIT);
 
@@ -906,6 +957,16 @@ function buildProductIndex(records) {
 
 function renderProductOptions(listElement, records, inputValue) {
     const normalizedInput = normalizeProductValue(inputValue || '');
+    if (!shouldRenderSuggestions(normalizedInput)) {
+        renderDatalistOptions(listElement, []);
+        return;
+    }
+
+    if (productIndex.byCode.has(normalizedInput)) {
+        renderDatalistOptions(listElement, []);
+        return;
+    }
+
     const matches = getProductMatches(records, normalizedInput)
         .slice(0, PRODUCT_SUGGESTION_LIMIT);
 
@@ -1078,8 +1139,21 @@ function parseCsvLine(line) {
     return fields;
 }
 
+function shouldRenderSuggestions(normalizedInput) {
+    return Boolean(normalizedInput);
+}
+
+function sanitizePartnerRecords(records) {
+    return records.filter((record) => isValidPartnerName(record.name));
+}
+
+function isValidPartnerName(value) {
+    const normalized = normalizePartnerValue(String(value || ''));
+    return Boolean(normalized) && normalized !== '.';
+}
+
 function removeDiacritics(value) {
-    return value
+    return String(value ?? '')
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
         .replace(/đ/g, 'd')
@@ -1194,11 +1268,13 @@ function getProductStatusEntries(elements) {
     return Array.from(elements.productStatusList.querySelectorAll('.product-status-row')).map((row) => {
         const codeInput = row.querySelector('.product-code-input');
         const statusSelect = row.querySelector('.product-status-select');
+        const urboxCheckbox = row.querySelector('.product-urbox-checkbox');
 
         return {
             productCodeInput: codeInput ? codeInput.value.trim() : '',
             productCode: codeInput ? resolveProductCode(codeInput.value) : '',
-            statusInput: statusSelect ? statusSelect.value.trim() : ''
+            statusInput: statusSelect ? statusSelect.value.trim() : '',
+            hasUrbox: Boolean(urboxCheckbox?.checked)
         };
     });
 }
@@ -1266,7 +1342,10 @@ function copyText(elements) {
         }
     }
 
-    const productLines = filledProductStatusEntries.map((entry) => `${entry.productCode} - ${entry.statusInput} | `);
+    const productLines = filledProductStatusEntries.map((entry) => {
+        const formattedStatus = formatActivationStatusForCopy(entry.statusInput, entry.hasUrbox);
+        return `${entry.productCode} - ${formattedStatus} | `;
+    });
     const footerParts = [];
 
     const formattedShippingFee = formatShippingFeeForCopy(elements.shippingFee.value.trim());
@@ -1323,6 +1402,15 @@ function sortRecordsByLabel(records, key) {
 
 function sortValuesByLengthThenAlpha(values) {
     return [...values].sort((firstValue, secondValue) => compareValuesByLengthThenAlpha(firstValue, secondValue));
+}
+
+function formatActivationStatusForCopy(statusValue, hasUrbox) {
+    const trimmedStatus = String(statusValue || '').trim();
+    if (!trimmedStatus) {
+        return '';
+    }
+
+    return hasUrbox ? `${trimmedStatus}, còn Urbox` : trimmedStatus;
 }
 
 function sanitizeProductCode(value) {

@@ -24,6 +24,11 @@ function Normalize-Cell([string]$Value) {
     return ([string]$Value -replace '\s+', ' ').Trim()
 }
 
+function Test-ValidPartnerName([string]$Value) {
+    $normalized = Normalize-Cell $Value
+    return $normalized -and $normalized -ne '.'
+}
+
 function Sanitize-ProductCode([string]$Value) {
     $sanitized = Normalize-Cell $Value
     if (-not $sanitized) {
@@ -48,7 +53,9 @@ function Sanitize-ProductCode([string]$Value) {
     return $sanitized
 }
 
-$partnerRows = Get-CsvRows -Uri $partnerUrl | Sort-Object `
+$partnerRows = Get-CsvRows -Uri $partnerUrl | Where-Object {
+    Test-ValidPartnerName ([string]$_.PSObject.Properties[1].Value)
+} | Sort-Object `
     @{ Expression = { [string]($_.PSObject.Properties[1].Value).Trim().Length } }, `
     @{ Expression = { [string]($_.PSObject.Properties[1].Value).Trim().ToLowerInvariant() } }, `
     @{ Expression = { [string]($_.PSObject.Properties[0].Value).Trim().ToLowerInvariant() } }

@@ -369,13 +369,35 @@ select option {
 
 .product-status-row {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto auto;
     gap: 8px;
     align-items: center;
 }
 
+.product-status-row + .product-status-row {
+    padding-top: 10px;
+    border-top: 1px solid var(--divider);
+}
+
 .product-status-row .input-stack {
     gap: 0;
+}
+
+.product-urbox-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    user-select: none;
+}
+
+.product-urbox-toggle input {
+    margin: 0;
+    accent-color: var(--button-bg);
 }
 
 .product-status-actions {
