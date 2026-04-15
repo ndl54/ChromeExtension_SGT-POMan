@@ -39,13 +39,13 @@ DT000053,Anh Tiệp
 DT000015,Anh Tuấn
 DT000014,Anh Vịnh
 DT000049,Anh Định
+DT000696,Hưng Kho
 DT000002,Lalamove
 DT000038,Long Anh
 DT000008,Minh Lộc
 DT000084,Nhất Tín
 DT000240,SHIP THỌ
 DT000409,Thuê ĐMX
-DT000187,thọ+a tú
 DT000080,Tín Phát
 DT000024,Đất Việt
 DT000451,Anh Chính
@@ -58,20 +58,17 @@ DT000028,Hiếu Linh
 DT000029,Homematic
 DT000007,Khang Anh
 DT000099,Minh Ngọc
-DT000426,Minh sale
 DT000192,Nhi sales
 DT000025,Nhân Việt
 DT000198,Sale Hưng
 DT000191,Sales Đạt
 DT000332,Đại + Huy
 DT000239,A Tú + Đại
-DT000275,A Tú + Đại
 DT000042,Anh Nghiêm
 DT000013,Anh Trường
 DT000390,Huy + GHTK
 DT000297,Huy + Tỉnh
 DT000274,Huy + Đoan
-DT000145,Hà Văn Anh
 DT000224,Hưng sales
 DT000118,Hưng Thịnh
 DT000247,Khởi + Huy
@@ -81,7 +78,6 @@ DT000232,Khởi + Đại
 NCC + Khởi,NCC + Khởi
 DT000120,Nguyễn Kim
 DT000169,Sales Kiên
-DT000182,Sales Mạnh
 DT000075,Ship ngoài
 DT000036,Thông Linh
 DT000158,Thọ + Tiệp
@@ -94,16 +90,13 @@ DT000329,Đại + Khởi
 DT000225,Đại + Đoan
 DT000271,A Huy + NCC
 DT000333,A Lưu + Huy
-DT000369,A Lưu + NCC
 DT000370,A Lưu + NCC
 DT000194,A Tú + Khởi
-DT000236,A Tú + Đoan
 DT000006,Anh Sơn già
 DT000011,Anh Sơn trẻ
 DT000135,Anh Văn Anh
 DT000335,Bằng + Khởi
 DT000287,Bằng + Tỉnh
-DT000384,Bằng + Đoan
 DT000572,Chính + NCC
 DT000067,Huyền Trang
 DT000391,Khởi + GHTK
@@ -111,11 +104,8 @@ DT000283,Khởi + Tỉnh
 DT000289,Khởi + Đoan
 DT000047,Minh Phương
 DT000021,Perfecthome
-DT000175,Sales Huyền
 DT000421,Sỹ điều hoà
-DT000178,Sỹ Điều Hòa
 DT000033,Tuấn Anh HD
-DT000392,Tỉnh + GHTK
 DT000316,Tỉnh + Đoan
 DT000399,Đoan + GHTK
 DT000440,Đoan + Minh
@@ -141,26 +131,18 @@ DT000094,ĐMX + Nhà xe
 DT000472,Đoan + Chính
 DT000585,Đoan + Khanh
 DT000502,Đoan + Trung
-DT000292,A Giang + Đại
 DT000360,A Lưu + A Đại
 DT000361,A Lưu + A Đại
-DT000439,A Lưu + Thắng
 DT000387,A Phong + Đại
 DT000193,A Tuấn + A Tú
-DT000383,A Tuấn + Khởi
 DT000267,A Tuấn + Tỉnh
 DT000228,A Tuấn + Đoan
 DT000252,A Tú + A Bằng
 DT000203,A Tú điều hoà
-DT000328,Anh Lưu + Huy
 DT000350,Anh Lưu + Đại
 DT000185,Anh Tú + Tiệp
 DT000454,Chính + Trung
-DT000601,Giao vận Test
-DT000549,Khanh + Trung
-DT000550,Khanh + Trung
-DT000551,Khanh + Trung
-DT000552,Khanh + Trung
+DT000612,Khanh + Chính
 DT000553,Khanh + Trung
 DT000199,Khởi + A Tuấn
 DT000189,Khởi giao vận
@@ -173,6 +155,7 @@ DT000141,Thọ + Văn Anh
 DT000208,Toàn điều hoà
 DT000528,Trung + Khanh
 DT000398,Việt Điều Hòa
+DT000702,Vịnh điều hòa
 DT000165,Xe tải a Duẩn
 DT000212,Đoan giao vận
 DT000396,A Giang + GHTK
@@ -198,18 +181,15 @@ DT000210,Khởi + A Giang
 DT000012,Kỹ sư điện máy
 DT000097,NPP Hưng Thịnh
 DT000149,Sales Tuấn Anh
-DT000430,Thiện giao vận
 DT000443,Trung giao vận
 DT000222,Tuấn Anh Sales
 DT000556,Tâm + Nhất Tín
 DT000217,Đại + Lalamove
 DT000337,Đại + Nhất Tín
-DT000184,A Dũng + A Tiệp
 DT000259,A Giang + A Lưu
 DT000468,A Giang + Chính
 DT000418,A Hưng lalamove
 DT000202,A Khởi điều hoà
-DT000471,A Lưu + A Giang
 DT000343,A Lưu + A Phong
 DT000255,A Lưu +lalamove
 DT000254,A Tỉnh giao vận
@@ -227,7 +207,6 @@ DT000213,Lalamove + Đoan
 DT000243,Lalamove A Ngọc
 DT000446,Minh + Lalamove
 DT000455,Minh + Nhất Tín
-DT000415,Nghiêm điều hoà
 DT000134,Ship Thọ xe máy
 DT000401,Tỉnh + Nhất Tín
 DT000132,Xe ghép đi tỉnh
@@ -243,15 +222,14 @@ DT000304,Anh Giang + Tỉnh
 DT000393,Anh Thư Điều Hòa
 DT000040,Anh Đại + Nhà xe
 DT000442,Chính + Lalamove
-DT000573,Chính + Nhất tín
 DT000574,Chính + Nhất tín
 DT000547,Công Minh + Tỉnh
 DT000516,Khanh + Lalamove
+DT000611,Khởi + Công Minh
 DT000045,Nhà xe Ninh Bình
 DT000456,Trung + Lalamove
 DT000484,Trung + Nhất Tín
 DT000503,Tỉnh + Công Minh
-DT000324,Vận chuyển Netco
 DT000196,Điện máy chợ lớn
 DT000496,Đoan + Công Minh
 DT000268,A Bằng + lalamove
@@ -265,7 +243,6 @@ DT000576,Anh Phong + Khanh
 DT000475,Anh Phong + Trung
 DT000059,Anh Tiệp + Nhà xe
 DT000062,Anh Tiệp - sẽ xóa
-DT000174,Anh Tuấn + Anh Tú
 DT000046,Anh Tuấn + Nhà xe
 DT000205,Anh Tú Ship ngoài
 DT000483,Chính + Công Minh
@@ -273,6 +250,7 @@ DT000048,Chú Thức + Anh Ba
 DT000559,Khanh + Công Minh
 DT000133,Khách qua kho bốc
 DT000518,Khởi + Quang Minh
+DT000698,Khởi + Tâm lái xe
 DT000522,Khởi + xe tải SGT
 DT000004,Lalamove + Anh Ba
 DT000137,Lalamove + Anh Tú
@@ -289,6 +267,7 @@ DT000469,A Lưu + Quang Minh
 DT000353,A Phong + Lalamove
 DT000371,A Phong + Nhất tín
 DT000186,A Tuấn + A Văn Anh
+DT000705,Anh Lưu + Nhất Tín
 DT000096,Anh Thế Anh ba gác
 DT000109,Anh Trung Điều Hòa
 DT000039,Anh Tuấn + Anh Đại
@@ -296,30 +275,30 @@ DT000504,Chính + Quang Minh
 DT000529,Chính + Xe tải SGT
 DT000491,Công Minh giao vận
 DT000590,Khanh + Quang Minh
+DT000605,Khanh + Tâm xe tải
 DT000534,Khanh + Xe tải SGT
 DT000144,Lalamove + Anh Thọ
 DT000037,Lalamove + Anh Đại
 DT000309,Lalamove Anh Cường
 DT000044,Nguyễn Hoàng BOSCH
+DT000610,Quang Minh + Chính
 DT000474,Quang Minh + Trung
 DT000069,Việt Hải Thanh Oai
-DT000600,Đạt kho + Lalamove
+DT000600,Đạt kho +  Lalamove
 DT000487,Anh Lưu + Công Minh
 DT000488,Anh Lưu + Công Minh
 DT000061,Anh Tiệp + Đất Việt
 DT000058,Anh Tuấn + Anh Tiệp
 DT000375,anh Tuấn + Nhất Tín
 DT000017,Chú Thức + Anh Tuấn
+DT000607,Khanh + Trung + NCC
 Lalamove + anh Dũng,Lalamove + anh Dũng
 DT000055,Lalamove + Anh Tiệp
 DT000016,Lalamove + Anh Tuấn
 DT000461,Quang Minh giao vận
-DT000153,Tiệp + Tú + Văn Anh
 DT000523,Tâm Giao Vận xe tải
-DT000499,Anh Lưu + Quang Minh
 DT000077,Anh Tiệp + xe ba gác
 DT000076,Anh Tuấn + xe ba gác
-DT000146,Anh Tú + Anh văn Anh
 DT000495,Công Minh + Lalamove
 DT000492,Công Minh + Nhất Tín
 DT000078,Lalamove + Anh Khánh
@@ -338,8 +317,6 @@ DT000066,Anh Tuấn + xe cắt nóc
 DT000276,Bằng + Huy + Lalamove
 DT000030,Chú Thức + Anh Trường
 DT000298,Huy + Tỉnh + Lalamove
-DT000150,Hà Văn Anh + lalamove
-DT000541,Khanh + Việt điều hòa
 DT000249,Khởi + Huy + lalamove
 DT000389,Khởi + Lưu + Lalamove
 DT000281,Khởi + Tỉnh + Lalmove
@@ -349,6 +326,7 @@ DT000129,Lalamove + Anh Trường
 DT000018,Nguyễn Kim + Anh Tuấn
 DT000466,Quang Minh + Lalamove
 DT000465,Quang Minh + Nhất Tín
+DT000703,Tâm + Xe ghép đi tỉnh
 DT000540,Tâm lái xe + Lalamove
 DT000427,Tỉnh + Khởi + Lalmove
 DT000323,Tỉnh + Đại + lalamove
@@ -359,8 +337,6 @@ DT000314,Đoan + Huy + Lalamove
 DT000563,Đoan + Tâm lái xe tải
 DT000564,Đoan + Tâm lái xe tải
 DT000257,ĐẠI + BẰNG + LALAMOVE
-DT000347,Đại + Khởi + Lalamove
-DT000348,Đại + Khởi + Lalamove
 DT000226,Đại + Đoan + lalamove
 DT000382,A Lưu + Huy + Lalamove
 DT000538,A Lưu + Tâm lái xe tải
@@ -370,10 +346,10 @@ DT000489,Anh Phong + Quang Minh
 DT000568,Anh Phong + Tâm lái xe
 DT000155,Anh Thế Anh + Anh Tuấn
 DT000123,Anh Tiệp + Anh Sơn già
-DT000138,Anh Tiệp + Anh Văn Anh
 DT000380,Bằng + Khởi + Lalamove
 DT000381,Bằng + Khởi + Lalamove
 DT000295,Bằng + Tỉnh + Lalamove
+DT000693,Chính + Huy + Lalamove
 DT000536,Chính + Tâm lái xe tải
 DT000561,Công Minh + Quang Minh
 DT000521,Công Minh + Xe tải SGT
@@ -405,9 +381,11 @@ DT000463,Chính + Minh + Lalamove
 DT000458,Chính + Tỉnh + Lalamove
 DT000565,Khanh + Khởi + Lalamove
 DT000545,Khanh + Tỉnh + Lalamove
+DT000609,Khanh + xe ghép đi tỉnh
 DT000494,Khởi + Chính + Lalamove
 DT000507,Khởi + Trung + lalamove
 DT000116,Lalamove + Anh Mạnh SGT
+DT000608,Trung + Tỉnh + Lalamove
 DT000566,Trung + xe ghép đi tỉnh
 DT000567,Trung + xe ghép đi tỉnh
 DT000520,Đoan + Khanh + Lalamove
@@ -416,7 +394,6 @@ DT000220,A Giang + A Tú + lalmove
 DT000336,A Giang + Đại + Lalamove
 DT000476,A Lưu + Trung + Lalamove
 DT000356,A Phong + Huy + Lalamove
-DT000195,A Tuấn + A Tú + lalamove
 DT000354,A Tuấn + Bằng + Lalamove
 DT000270,A Tuấn + Tỉnh + lalamove
 DT000230,A Tuấn + Đoan + lalamove
@@ -441,7 +418,6 @@ DT000231,A Giang + Khởi + lalamove
 DT000417,A Giang + Tỉnh + Lalamove
 DT000378,A Giang + xe ghép đi tỉnh
 DT000404,A Giang + Đoan + Lalamove
-DT000405,A Giang + Đoan + Lalamove
 DT000376,A Lưu + A Bằng + Lalamove
 DT000351,A Phong + Bằng + Lalamove
 DT000429,A Phong + Khởi + Lalamove
@@ -457,17 +433,15 @@ DT000122,Anh Trà ba gác + Anh Tuấn
 DT000244,Anh Đại + Xe ghép đi tỉnh
 DT000543,Khanh + Trung + Công Minh
 DT000188,Lalamove + Anh Tuấn + Thọ
-DT000505,Lưu + Tỉnh + Trung + Khởi
 DT000435,Đoan + a Phong + lalamove
 DT000260,A Giang + A Lưu + Lalamove
 DT000478,A Giang + Chính + Lalamove
 DT000349,A Lưu + A Phong + Lalamove
 DT000480,A Phong + Chính + Lalamove
-DT000372,A Tuấn + A Bằng + Lalamove
 DT000282,A Đoan + A Bằng + Lalamove
 DT000331,Anh Giang + Huy + Lalamove
 DT000539,Anh Giang + Tâm lái xe Tải
-DT000447,Anh Lưu + Chính + Lalamove
+DT000447,Anh Lưu  + Chính + Lalamove
 DT000514,Anh Lưu + Chính + Lalamove
 DT000591,Anh Lưu + Khanh + Lalamove
 DT000438,Anh Lưu + Thắng + Lalamove
@@ -481,7 +455,6 @@ DT000599,Việt Anh + xe ghép đi tỉnh
 DT000167,Xe tải a Duẩn + Anh Trường
 DT000160,xe tải anh Duẩn + anh Tuấn
 DT000166,Xe tải Anh Duẩn + Thọ+Tiệp
-DT000121,Xe tải Lạng sơn 29B 638-57
 DT000285,A Giang + A Tuấn + lalamove
 DT000216,A Giang + A Đoan + lalamove
 DT000366,A Khởi + A Phong + Lalamove
@@ -491,6 +464,7 @@ DT000305,Anh Giang + Tỉnh + Lalamove
 DT000241,Anh Giang + xe ghép đi tỉnh
 DT000168,Anh Thế Anh ba gác + Anh Tú
 DT000506,Chính + Tỉnh + Trung + Khởi
+DT000691,Công Minh + Xe ghép đi tỉnh
 DT000513,Khởi + Công Minh + Lalamove
 DT000537,Quang Minh + Tâm lái xe tải
 DT000490,Đoan + Công Minh + Lalamove
@@ -499,14 +473,16 @@ DT000510,Anh Giang + Khanh + Lalamove
 DT000448,Anh Giang + Trung + Lalamove
 DT000597,Anh Phong + Trung + Lalamove
 DT000119,Anh Trà ba gác + Anh Sơn già
-DT000173,Anh Tuấn + Anh Tú + Lalamove
+DT000173,Anh Tuấn  + Anh Tú + Lalamove
 DT000358,Khởi + Huy + Bằng + Lalamove
 DT000207,Lalamove + anh Tú ship ngoài
 DT000432,Lalamove anh Hưng + Nhất Tín
 DT000571,Quang Minh + Tỉnh + Lalamove
 DT000593,Quang Minh + xe ghép đi tỉnh
+DT000700,Tâm giao vận + Việt điều hòa
 DT000263,Xe ghép đi tỉnh + Anh Lưu GV
 DT000485,Đoan + Quang Minh + Lalamove
+DT000694,Đoan + Tỉnh + Tâm xe tải SGT
 DT000291,A Lưu + A Giang + Bằng + Khởi
 DT000355,A Lưu + Đại + Tỉnh + Lalamove
 DT000180,A Tuấn + Tiệp + A Tú + A Dũng
@@ -520,23 +496,23 @@ DT000569,Khanh + Quang Minh + Lalamove
 DT000159,Lalamove + Anh Thọ + Anh Tiệp
 DT000462,Quang Minh + Chính + Lalamove
 DT000578,Quang Minh + Trung + Lalamove
+DT000704,Tỉnh giao vận + Vịnh điều hòa
 DT000162,xe tải anh Duẩn + anh Văn Anh
 DT000581,Đoan + Chính + Tâm lái xe tải
 DT000557,Đoan + Khanh + Tâm lái xe tải
-DT000558,Đoan + Khanh + Tâm lái xe tải
 DT000172,A Tuấn + A Thọ + A Duẩn xe tải
 DT000359,A Tuấn + Huy + Đoan + Lalamove
+DT000701,Anh Lưu + Anh Giang + Lalamove
 DT000498,Anh Lưu + Công Minh + Lalamove
 DT000056,Anh Tuấn + Anh Tiệp + Lalamove
 DT000526,Chính + Công Minh + xe tải SGT
-DT000527,Chính + Công Minh + xe tải SGT
-DT000408,Lalamove + anh Mạnh ship ngoài
 DT000419,Xe ghép đi tỉnh + thuê ĐMX lắp
 DT000464,A Lưu + Khởi + Trung + Lalamove
 DT000357,A Tuấn + A Lưu + Huy + Lalamove
 DT000493,Anh Lưu + Quang Minh + Lalamove
 DT000345,Anh Lưu + Đại + Bằng + Lalamove
 DT000299,Anh Lưu + Đại + Đoan + Lalamove
+DT000695,Anh Phong + Anh Lưu + Công Minh
 DT000388,Anh Tuấn + Anh Phong + Lalamove
 DT000065,Anh Tuấn + Chú Thức + Anh Khánh
 DT000183,Anh Tuấn + Dũng GHLĐ + Lalamove
@@ -545,35 +521,30 @@ DT000423,Anh Giang + Anh Phong + lalamove
 DT000530,Anh Giang + Công Minh + Lalamove
 DT000579,Anh Lưu + Chính + Tâm lái xe tải
 DT000531,Anh Phong + Công Minh + Lalamove
-DT000532,Anh Phong + Công Minh + Lalamove
 DT000533,Anh Phong + Công Minh + Lalamove
 DT000206,Lalamove + Thọ + anh Tuấn + Khởi
 DT000589,Quang Minh + Hưng kho + Lalamove
 DT000584,Tâm lái xe tải + xe ghép đi tỉnh
 DT000280,A Lưu + A Giang + Bằng + Lalamove
-DT000286,A Lưu + A Giang + Khởi + Lalamove
-DT000406,A Phong + A Lưu + Đoan + Lalamove
-DT000407,A Phong + A Lưu + Đoan + Lalamove
+DT000286,A Lưu +  A Giang + Khởi + Lalamove
 DT000344,A Tuấn + A Khởi+ a Lưu + lalamove
 DT000301,A Tuấn + Tỉnh + A Đoan + lalamove
 DT000515,Anh Giang + Quang Minh + Lalamove
+DT000692,Anh Phong + Quang Minh + Lalamove
 DT000604,Công Minh + Quang Minh + Lalamove
 DT000139,Lalamove + Anh Tiệp + Anh Văn Anh
 DT000577,Quang Minh + Huy + Tâm lái xe tải
 DT000322,Đoan + Lalamove + Xe ghép đi tỉnh
-DT000598,Anh Lưu + Khởi + Tỉnh + Xe tải SGT
 DT000580,Anh Phong + Quang Minh + Công Minh
 DT000308,Anh Tú + Anh Lưu + Đoan + Lalamove
 DT000588,Anh Lưu + Khởi + Khanh + Tỉnh + NCC
 DT000560,Anh Phong + Quang Minh + Tâm lái xe
-DT000509,Lalamove Anh Hưng + Xe ghép đi tỉnh
 DT000092,Nguyễn Hoàng Bosch + NPP Hưng Thịnh
 DT000035,Nhà Xe Thành Thắng HN-HP + Anh Tuấn
 DT000596,Anh Phong + Đoan + Quang Minh + Chính
-DT000277,A Giang + Đoan + Khởi + Tỉnh + Lalamove
-DT000300,Anh Tuấn + Đoan + Huy + Tỉnh + Lalamove
+DT000699,Anh Lưu + Khanh + Quang Minh + Lalamove
 DT000272,A Tuấn + A Giang + Khởi + Huy + Lalamove
 DT000592,Anh Phong + Đoan + Quang Minh + Công Minh
-DT000587,A Lưu + Khởi + Quang Minh + Tỉnh + NCC giao
+DT000697,Anh Phong + Anh Giang + Chính + Tâm + Lalamove
 DT000519,Anh Lưu + Tỉnh + Trung + Công Minh + Quang Minh
 DT000542,Công Minh + Quang Minh + Trung + Tâm lái xe tải

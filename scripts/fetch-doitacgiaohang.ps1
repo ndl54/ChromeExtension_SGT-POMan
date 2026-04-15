@@ -16,6 +16,10 @@ function Get-CsvRows([string]$Uri) {
     return (Invoke-WebRequest -Uri $Uri).Content | ConvertFrom-Csv
 }
 
+function Get-CsvLines([string]$Uri) {
+    return ((Invoke-WebRequest -Uri $Uri).Content -split "`r?`n") | Where-Object { $_.Trim().Length -gt 0 }
+}
+
 function Export-CsvRows([object[]]$Rows, [string]$OutputPath) {
     $Rows | Export-Csv -Path $OutputPath -NoTypeInformation -Encoding UTF8
 }
@@ -63,8 +67,25 @@ Export-CsvRows -Rows $partnerRows -OutputPath $PartnerOutputPath
 Write-Host "Saved sorted partner data to $PartnerOutputPath"
 
 $supplierRows = Get-CsvRows -Uri $supplierUrl | Sort-Object `
-    @{ Expression = { [string]($_.PSObject.Properties[1].Value).Trim().Length } }, `
-    @{ Expression = { [string]($_.PSObject.Properties[1].Value).Trim().ToLowerInvariant() } }, `
+$supplierLines = Get-CsvLines -Uri $supplierUrl
+$supplierHeader = if ($supplierLines.Count -gt 0) { (($supplierLines[0] -split ',', 2)[0].Trim('"')) } else { 'Tên nhà cung cấp' }
+$supplierSeen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+$supplierRows = foreach ($line in $supplierLines | Select-Object -Skip 1) {
+    $fields = $line -split ',', 2
+    $supplierName = if ($fields.Count -ge 1) { (Normalize-Cell ($fields[-1].Trim('"'))) } else { '' }
+    if (-not $supplierName) {
+        continue
+    }
+
+    if (-not $supplierSeen.Add($supplierName)) {
+        continue
+    }
+
+    [PSCustomObject]@{
+        $supplierHeader = $supplierName
+    }
+} | Sort-Object `
+    @{ Expression = { [string]($_.PSObject.Properties[0].Value).Trim().Length } }, `
     @{ Expression = { [string]($_.PSObject.Properties[0].Value).Trim().ToLowerInvariant() } }
 Export-CsvRows -Rows $supplierRows -OutputPath $SupplierOutputPath
 Write-Host "Saved sorted supplier data to $SupplierOutputPath"

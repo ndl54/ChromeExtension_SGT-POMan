@@ -1,106 +1,133 @@
 ﻿# SGT POMan Chrome Extension
 
-Tiện ích giúp tạo nội dung cần sao chép nhanh cho bộ phận tạo Phiếu Nhập Hàng Nhà Cung Cấp (POMan) dựa trên các trường nhập liệu trong popup.
+Tiện ích Chrome hỗ trợ tạo nhanh nội dung ghi chú để sao chép cho 2 nghiệp vụ:
+- `Ghi chú Phiếu Nhập`
+- `Ghi chú Trả Hàng`
 
-## Tính năng
+## Tính năng chính
 
-- Chọn trường hợp ai lấy hàng và giao về đâu.
-- Đối tác giao hàng: tùy chọn, gợi ý từ danh sách đối tác
-- Nhà cung cấp: tùy chọn, gợi ý từ danh sách nhà cung cấp
-- Chọn nhiều cặp `mã sản phẩm -> trạng thái kích hoạt/quà tặng`
-- Tiền cước (nếu có) và ghi chú thêm
-- Sao chép nhanh vào clipboard
-- Tải mới dữ liệu đối tác, nhà cung cấp và mã sản phẩm từ Google Sheet rồi cache vào máy
+- Chuyển nhanh giữa 2 chế độ ghi chú bằng dropdown trên cùng.
+- Gợi ý dữ liệu từ Google Sheet cho:
+  - đối tác giao/trả hàng
+  - nhà cung cấp
+  - mã sản phẩm
+- Hỗ trợ nhiều dòng sản phẩm.
+- Sao chép nhanh vào clipboard.
+- Có thể `Điền lại dữ liệu cũ` từ note đã copy trước đó.
+- Có thể tải mới dữ liệu và cache vào `chrome.storage`.
 
-## Trường bắt buộc
+## 1. Ghi chú Phiếu Nhập
 
-- Trường hợp
-- Ít nhất 1 cặp `mã sản phẩm -> trạng thái`
+### Trường nhập
 
-## Định dạng nội dung sao chép
+- `Trường hợp` bắt buộc
+- `Đối tác giao hàng` tùy chọn
+- `Nhà cung cấp` tùy chọn
+- Ít nhất 1 dòng `mã sản phẩm + tình trạng kích/quà`
+- `Tiền cước` tùy chọn
+- `Ghi chú thêm` tùy chọn
 
-Ví dụ khi điền đầy đủ (Giao vận/đối tác lấy NCC):
+### Trường hợp khi copy
 
+- `case1`: `Lấy NCC giao khách`
+- `case2`: `Lấy NCC về kho`
+- `case3`: `NCC giao về kho`
+- `case4`: `NCC giao khách`
+
+### Format copy
+
+Với `case1` hoặc `case2`:
+
+```text
+[Đối tác giao hàng] | [Nhà cung cấp] | [Trường hợp]
+[Mã SP] - [Tình trạng] |
+[Mã SP] - [Tình trạng] |
+Cước: [số tiền] | [Ghi chú]
 ```
-Đối tác A [DT000001] | NCC A | Lấy NCC giao khách | HC-MWO381B: Còn Kích | LF-D6RCWM: Hết Kích | Cước: 100.000đ | Ghi chú tùy chọn
+
+Với `case3` hoặc `case4`:
+
+```text
+[Trường hợp] | [Đối tác giao hàng] | [Nhà cung cấp]
+[Mã SP] - [Tình trạng] |
+[Mã SP] - [Tình trạng] |
+Cước: [số tiền] | [Ghi chú]
 ```
-
-Nội dung được ghép theo thứ tự:
-
-```
-[Đối tác giao hàng] | [Nhà cung cấp] | [Trường hợp] | [Mã sản phẩm 1: Trạng thái 1] | [Mã sản phẩm 2: Trạng thái 2] | Cước: [số tiền] | [Ghi chú]
-```
-
-Áp dụng thứ tự này khi chọn Case 1 hoặc Case 2. Với Case 3 hoặc Case 4, thứ tự sẽ là:
-
-```
-[Trường hợp] | [Đối tác giao hàng] | [Nhà cung cấp] | [Mã sản phẩm 1: Trạng thái 1] | [Mã sản phẩm 2: Trạng thái 2] | Cước: [số tiền] | [Ghi chú]
-```
-
-Quy tắc ghép:
-
-| Văn bản hiển thị (UI)                                   | Văn bản copy vào clipboard                           |
-|---------------------------------------------------------|------------------------------------------------------|
-| NCC giao về kho SGT                                     | `Lấy NCC giao khách`                                 |
-| NCC giao tại nhà khách hàng                             | `Lấy NCC về kho`                                     |
-| Giao vận/đối tác lấy NCC giao khách                     | `NCC giao về kho`                                    |
-| Giao vận/đối tác lấy NCC giao về kho SGT                | `NCC giao khách`                                     |
-| Đối tác giao hàng                                       | `Tên đối tác [mã đối tác]`                           |
-| Mã sản phẩm + trạng thái                                | `[Mã sản phẩm]: [Giá trị đã chọn]`                   |
-| Cước (ví dụ nhập `100000`)                              | `Cước: 100.000đ`                                     |
-| Ghi chú                                                 | `| [nội dung ghi chú]` (nối cuối chuỗi)              |
-| Không nhập các field tùy chọn                           | Những phần tương ứng sẽ bị loại bỏ                   |
 
 Ghi chú:
-- Nếu không có tiền cước hoặc ghi chú thì bỏ qua phần tương ứng.
-- Đối tác sẽ tự động chuẩn hóa theo data: `Tên đối tác [mã đối tác]`.
-- Có thể thêm nhiều dòng mã sản phẩm, mỗi dòng đi kèm một trạng thái riêng.
+- Nếu không có cước hoặc ghi chú thì tự bỏ qua.
+- Đối tác được chuẩn hóa theo data.
+- Có hỗ trợ `Urbox` cho từng dòng sản phẩm.
 
-## Nhãn Trường hợp khi sao chép
+## 2. Ghi chú Trả Hàng
 
-- Case 1: Lấy NCC giao khách
-- Case 2: Lấy NCC về kho
-- Case 3: NCC giao về kho
-- Case 4: NCC giao khách
+### Trường nhập
 
-## Dữ liệu đối tác giao hàng
+- Ít nhất 1 dòng sản phẩm, mỗi dòng gồm:
+  - `Mã sản phẩm`
+  - `Tình trạng hàng`
+  - `Tình trạng vỏ, đai`
+- `Đối tác trả hàng` bắt buộc
+- `Ghi chú thêm` tùy chọn
 
-Nguồn dữ liệu: Google Sheet (read-only).
+### Format copy
 
-- Nút "Mở Google Sheet" để mở nhanh link nhập liệu.
-- Nút "Tải dữ liệu mới" sẽ fetch CSV từ Google Sheet và cache vào `chrome.storage`.
-- File gốc trong repo: `doitacgiaohang.csv` (được tạo từ Sheet).
-- File mã sản phẩm trong repo: `sanpham.csv` (được tạo từ sheet `San_Pham`).
-
-### Cập nhật file CSV trong repo
-
-Chạy script sau để cập nhật file CSV trong repo:
-
+```text
+[Mã SP] - [Tình trạng hàng] - [Tình trạng vỏ, đai] |
+[Mã SP] - [Tình trạng hàng] - [Tình trạng vỏ, đai] |
+Đối tác/GV: [Tên đối tác]
+Ghi chú: [Nội dung ghi chú]
 ```
+
+Ví dụ:
+
+```text
+UA65DU7700 - Hàng không lỗi - Vỏ đẹp |
+WT-85NG1 - Hàng lỗi - Vỏ không đẹp |
+Đối tác/GV: Lộc BM
+Ghi chú: Khách lùi giờ giao
+```
+
+Ghi chú:
+- Có thể thêm nhiều dòng sản phẩm.
+- Nếu không nhập `Ghi chú thêm` thì tự bỏ qua dòng `Ghi chú: ...`.
+- `Điền lại dữ liệu cũ` cũng hỗ trợ format này.
+
+## Dữ liệu nguồn
+
+Nguồn dữ liệu là Google Sheet:
+- `Doi_Tac_Giao_Hang`
+- `Nha_Cung_Cap`
+- `San_Pham`
+
+File CSV trong repo:
+- `doitacgiaohang.csv`
+- `nhacungcap.csv`
+- `sanpham.csv`
+
+Lưu ý:
+- `nhacungcap.csv` hiện chỉ còn 1 cột: `Tên nhà cung cấp`
+- mã sản phẩm được sanitize trước khi ghi CSV: bỏ hậu tố ` [IMEI]`, ` [CŨ]`, ` MN`, ` ML`, sau đó unique và sort
+
+## Cập nhật CSV trong repo
+
+Chạy:
+
+```powershell
 powershell -ExecutionPolicy Bypass -File scripts\fetch-doitacgiaohang.ps1
 ```
 
+Script sẽ cập nhật lại cả 3 file CSV từ Google Sheet hiện tại.
+
 ## Cài đặt
 
-1. Mở `chrome://extensions/`.
-2. Bật Developer mode.
-3. Chọn Load unpacked và trỏ tới thư mục dự án.
+1. Mở `chrome://extensions/`
+2. Bật `Developer mode`
+3. Chọn `Load unpacked`
+4. Trỏ tới thư mục dự án
 
 ## Yêu cầu
 
 - Google Chrome
-- Quyền clipboard
-- Quyền storage (để cache dữ liệu đối tác)
-
-## Nhà cung cấp
-
-- Trường tùy chọn, gợi ý từ `nhacungcap.csv` hoặc sheet `Nha_Cung_Cap`.
-- Khi copy, nhà cung cấp nằm sau đối tác giao hàng.
-- Nút tải dữ liệu sẽ cập nhật đối tác giao hàng, nhà cung cấp và mã sản phẩm.
-- Danh sách nhà cung cấp được sort theo độ dài ký tự tăng dần, sau đó theo A-Z.
-
-## Mã sản phẩm
-
-- Trường gợi ý từ `sanpham.csv` hoặc sheet `San_Pham`.
-- Danh sách mã sản phẩm được sort theo độ dài ký tự trước, sau đó theo thứ tự A-Z để đề xuất ngắn hơn hiện lên trước.
-- Trước khi ghi vào CSV, mã sản phẩm sẽ bỏ các hậu tố ` [IMEI]`, ` [CŨ]`, ` MN`, ` ML` rồi unique.
+- Quyền `clipboard`
+- Quyền `storage`

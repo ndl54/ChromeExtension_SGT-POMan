@@ -8,57 +8,91 @@
 </head>
 <body class="popup-surface">
     <div class="window-shell">
+        <section class="mode-switch-panel">
+            <select id="uiModeSelect" class="mode-switch-select" aria-label="Chọn chế độ ghi chú">
+                <option value="receipt">Ghi chú Phiếu Nhập</option>
+                <option value="return">Ghi chú Trả Hàng</option>
+            </select>
+        </section>
+
         <main class="window-body">
-            <section class="field field-row">
-                <label for="caseSelect">Trường hợp</label>
-                <select id="caseSelect">
-                    <option value="">Chọn trường hợp</option>
-                    <option value="case1">Giao vận/đối tác lấy NCC giao khách</option>
-                    <option value="case2">Giao vận/đối tác lấy NCC giao về kho SGT</option>
-                    <option value="case3">NCC giao về kho SGT</option>
-                    <option value="case4">NCC giao tại nhà khách hàng</option>
-                </select>
+            <section id="receiptForm" class="mode-panel">
+                <section class="field field-row">
+                    <label for="caseSelect">Trường hợp</label>
+                    <select id="caseSelect">
+                        <option value="">Chọn trường hợp</option>
+                        <option value="case1">Giao vận/đối tác lấy NCC giao khách</option>
+                        <option value="case2">Giao vận/đối tác lấy NCC giao về kho SGT</option>
+                        <option value="case3">NCC giao về kho SGT</option>
+                        <option value="case4">NCC giao tại nhà khách hàng</option>
+                    </select>
+                </section>
+
+                <section class="field field-row" id="partnerRow">
+                    <label for="partnerInput">Đối tác giao hàng</label>
+                    <div class="input-stack">
+                        <input type="text" id="partnerInput" list="partnerList" placeholder="G.Vận hoặc đối tác">
+                        <datalist id="partnerList"></datalist>
+                    </div>
+                </section>
+
+                <section class="field field-row" id="supplierRow">
+                    <label for="supplierInput">Nhà cung cấp</label>
+                    <div class="input-stack">
+                        <input type="text" id="supplierInput" list="supplierList" placeholder="Nhập tên hoặc mã nhà cung cấp">
+                        <datalist id="supplierList"></datalist>
+                    </div>
+                </section>
+
+                <section class="field receipt-product-section">
+                    <label>Tình trạng kích/quà</label>
+                    <div id="productStatusList" class="product-status-list"></div>
+                    <div class="product-status-actions receipt-product-status-actions">
+                        <button id="addProductStatus" class="mini-ghost-button" type="button">+ Thêm sản phẩm</button>
+                    </div>
+                    <datalist id="productCodeList"></datalist>
+                </section>
+
+                <section class="field field-row">
+                    <label for="shippingFee">Tiền cước (nếu có)</label>
+                    <div class="currency-input">
+                        <input type="text" id="shippingFee" placeholder="0" inputmode="numeric">
+                        <span class="suffix">đ</span>
+                    </div>
+                </section>
+
+                <section class="field">
+                    <label for="note">Ghi chú thêm</label>
+                    <textarea id="note" placeholder="Ví dụ: mang loa về kho"></textarea>
+                </section>
             </section>
 
-            <section class="field field-row" id="partnerRow">
-                <label for="partnerInput">Đối tác giao hàng</label>
-                <div class="input-stack">
-                    <input type="text" id="partnerInput" list="partnerList" placeholder="G.Vận hoặc đối tác">
-                    <datalist id="partnerList"></datalist>
-                </div>
+            <section id="returnForm" class="mode-panel" hidden>
+                <section class="field">
+                    <label>Chọn mã sản phẩm</label>
+                    <div id="returnProductStatusList" class="product-status-list"></div>
+                    <div class="product-status-actions return-product-status-actions">
+                        <button id="addReturnProductStatus" class="mini-ghost-button" type="button">+ Thêm sản phẩm</button>
+                    </div>
+                    <datalist id="returnProductCodeList"></datalist>
+                </section>
+
+                <section class="field field-row">
+                    <label for="returnPartnerInput">Đối tác trả hàng</label>
+                    <div class="input-stack">
+                        <input type="text" id="returnPartnerInput" list="returnPartnerList" placeholder="G.Vận hoặc đối tác">
+                        <datalist id="returnPartnerList"></datalist>
+                    </div>
+                </section>
+
+                <section class="field">
+                    <label for="returnNote">Ghi chú thêm</label>
+                    <textarea id="returnNote" placeholder="Khách lùi giờ giao
+IMEI 0123XYZ lỗi"></textarea>
+                </section>
             </section>
 
-            <section class="field field-row" id="supplierRow">
-                <label for="supplierInput">Nhà cung cấp</label>
-                <div class="input-stack">
-                    <input type="text" id="supplierInput" list="supplierList" placeholder="Nhập tên hoặc mã nhà cung cấp">
-                    <datalist id="supplierList"></datalist>
-                </div>
-            </section>
-
-            <section class="field">
-                <label>Kích hoạt/Tặng quà</label>
-                <div id="productStatusList" class="product-status-list"></div>
-                <div class="product-status-actions">
-                    <button id="addProductStatus" class="mini-ghost-button" type="button">+ Thêm sản phẩm</button>
-                </div>
-                <datalist id="productCodeList"></datalist>
-            </section>
-
-            <section class="field field-row">
-                <label for="shippingFee">Tiền cước (nếu có)</label>
-                <div class="currency-input">
-                    <input type="text" id="shippingFee" placeholder="0" inputmode="numeric">
-                    <span class="suffix">đ</span>
-                </div>
-            </section>
-
-            <section class="field">
-                <label for="note">Ghi chú thêm</label>
-                <textarea id="note" placeholder="Ví dụ: mang loa về kho"></textarea>
-            </section>
-
-            <section class="field">
+            <section id="dataToolsPanel" class="field">
                 <label>Dữ liệu gợi ý</label>
                 <div class="button-stack">
                     <div class="button-row">
@@ -75,7 +109,7 @@
             </div>
         </main>
 
-        <section class="restore-panel">
+        <section id="restorePanel" class="restore-panel">
             <div class="restore-header">
                 <label for="restoreInput">Điền lại dữ liệu cũ</label>
                 <span class="status-text">Paste note cũ rồi bấm xử lý để tự điền lại form.</span>

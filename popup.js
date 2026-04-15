@@ -15,6 +15,8 @@ const PRODUCT_CSV_PATH = 'sanpham.csv';
 const PARTNER_CACHE_KEY = 'partnerCacheV3';
 const SUPPLIER_CACHE_KEY = 'supplierCacheV3';
 const PRODUCT_CACHE_KEY = 'productCacheV1';
+const UI_MODE_RECEIPT = 'receipt';
+const UI_MODE_RETURN = 'return';
 const CASES_WITH_PARTNER_FIRST = new Set(['case1', 'case2']);
 const PARTNER_SUGGESTION_LIMIT = 80;
 const SUPPLIER_SUGGESTION_LIMIT = 80;
@@ -29,6 +31,26 @@ const ACTIVATION_OPTIONS = [
     'Hết Vip/Tích Lũy, hết Kích',
     'Không rõ tình trạng Kích'
 ];
+const RETURN_ITEM_STATUS_OPTIONS = [
+    'Hàng không lỗi',
+    'Hàng lỗi'
+];
+const RETURN_APPEARANCE_OPTIONS = [
+    'Vỏ đẹp',
+    'Vỏ không đẹp'
+];
+const RESTORE_PLACEHOLDERS = {
+    [UI_MODE_RECEIPT]: `Ví dụ:
+NCC giao về kho | Việt Hàn
+OLED65G5PSA - Còn Kích | 
+OLED55C5PSA - Còn Kích | 
+Cước: 20.000đ | Đã trừ chiết khấu.`,
+    [UI_MODE_RETURN]: `Ví dụ:
+UA65DU7700 - Hàng không lỗi - Vỏ đẹp | 
+WT-85NG1 - Hàng lỗi - Vỏ không đẹp | 
+Đối tác/GV: Lộc BM
+Ghi chú: Khách lùi giờ giao`
+};
 const CASE_COPY_LABELS = {
     case1: 'Lấy NCC giao khách',
     case2: 'Lấy NCC về kho',
@@ -63,21 +85,32 @@ const statusState = {
 
 document.addEventListener('DOMContentLoaded', () => {
     const elements = {
+        uiModeSelect: document.getElementById('uiModeSelect'),
+        receiptForm: document.getElementById('receiptForm'),
+        returnForm: document.getElementById('returnForm'),
+        restorePanel: document.getElementById('restorePanel'),
+        dataToolsPanel: document.getElementById('dataToolsPanel'),
         caseSelect: document.getElementById('caseSelect'),
         partnerInput: document.getElementById('partnerInput'),
         partnerList: document.getElementById('partnerList'),
+        returnPartnerInput: document.getElementById('returnPartnerInput'),
+        returnPartnerList: document.getElementById('returnPartnerList'),
         supplierInput: document.getElementById('supplierInput'),
         supplierList: document.getElementById('supplierList'),
         productStatusList: document.getElementById('productStatusList'),
         productCodeList: document.getElementById('productCodeList'),
+        returnProductStatusList: document.getElementById('returnProductStatusList'),
+        returnProductCodeList: document.getElementById('returnProductCodeList'),
         shippingFee: document.getElementById('shippingFee'),
         note: document.getElementById('note'),
+        returnNote: document.getElementById('returnNote'),
         copyButton: document.getElementById('copyButton'),
         resetButton: document.getElementById('resetButton'),
         restoreInput: document.getElementById('restoreInput'),
         restoreButton: document.getElementById('restoreButton'),
         restoreStatus: document.getElementById('restoreStatus'),
         addProductStatusButton: document.getElementById('addProductStatus'),
+        addReturnProductStatusButton: document.getElementById('addReturnProductStatus'),
         refreshButton: document.getElementById('refreshPartners'),
         openSheetButton: document.getElementById('openSheet'),
         dataStatus: document.getElementById('dataStatus')
@@ -87,27 +120,69 @@ document.addEventListener('DOMContentLoaded', () => {
     setStatus(elements, 'supplier', statusState.supplier);
     setStatus(elements, 'product', statusState.product);
 
+    elements.uiModeSelect.addEventListener('change', () => handleUiModeChange(elements));
     elements.partnerInput.addEventListener('input', () => handlePartnerInput(elements));
     elements.partnerInput.addEventListener('focus', () => renderPartnerOptions(elements.partnerList, partnerRecords, elements.partnerInput.value));
+    elements.returnPartnerInput.addEventListener('input', () => handleReturnPartnerInput(elements));
+    elements.returnPartnerInput.addEventListener('focus', () => renderPartnerOptions(elements.returnPartnerList, partnerRecords, elements.returnPartnerInput.value));
     elements.supplierInput.addEventListener('input', () => handleSupplierInput(elements));
     elements.supplierInput.addEventListener('focus', () => renderSupplierOptions(elements.supplierList, supplierRecords, elements.supplierInput.value));
     elements.copyButton.addEventListener('click', () => copyText(elements));
     elements.resetButton.addEventListener('click', () => resetForm(elements));
     elements.restoreButton.addEventListener('click', () => restoreFromText(elements));
     elements.addProductStatusButton.addEventListener('click', () => addProductStatusRow(elements, { focusCode: true }));
+    elements.addReturnProductStatusButton.addEventListener('click', () => addReturnProductStatusRow(elements, { focusCode: true }));
     elements.refreshButton.addEventListener('click', () => refreshAllData(elements));
     elements.openSheetButton.addEventListener('click', openSheet);
     elements.productStatusList.addEventListener('input', (event) => handleProductStatusInput(event, elements));
     elements.productStatusList.addEventListener('focusin', (event) => handleProductStatusFocus(event, elements));
     elements.productStatusList.addEventListener('click', (event) => handleProductStatusClick(event, elements));
+    elements.returnProductStatusList.addEventListener('input', (event) => handleReturnProductStatusInput(event, elements));
+    elements.returnProductStatusList.addEventListener('focusin', (event) => handleReturnProductStatusFocus(event, elements));
+    elements.returnProductStatusList.addEventListener('click', (event) => handleReturnProductStatusClick(event, elements));
 
     addProductStatusRow(elements);
+    addReturnProductStatusRow(elements);
     setupShippingFeeInput(elements.shippingFee);
+    updateUiMode(elements, UI_MODE_RECEIPT);
     loadAllData(elements);
 });
 
+function getCurrentUiMode(elements) {
+    return elements.uiModeSelect?.value === UI_MODE_RETURN ? UI_MODE_RETURN : UI_MODE_RECEIPT;
+}
+
+function handleUiModeChange(elements) {
+    updateUiMode(elements, getCurrentUiMode(elements));
+}
+
+function updateUiMode(elements, mode) {
+    const isReturnMode = mode === UI_MODE_RETURN;
+
+    elements.receiptForm.hidden = isReturnMode;
+    elements.returnForm.hidden = !isReturnMode;
+    elements.restorePanel.hidden = false;
+    elements.dataToolsPanel.hidden = isReturnMode;
+    elements.restoreInput.placeholder = RESTORE_PLACEHOLDERS[mode] || RESTORE_PLACEHOLDERS[UI_MODE_RECEIPT];
+
+    if (isReturnMode) {
+        const firstReturnCodeInput = elements.returnProductStatusList.querySelector('.return-product-code-input');
+        firstReturnCodeInput?.focus();
+        renderProductOptions(elements.returnProductCodeList, productRecords, firstReturnCodeInput?.value || '');
+        renderPartnerOptions(elements.returnPartnerList, partnerRecords, elements.returnPartnerInput.value);
+        return;
+    }
+
+    elements.caseSelect.focus();
+    renderPartnerOptions(elements.partnerList, partnerRecords, elements.partnerInput.value);
+}
+
 function handlePartnerInput(elements) {
     renderPartnerOptions(elements.partnerList, partnerRecords, elements.partnerInput.value);
+}
+
+function handleReturnPartnerInput(elements) {
+    renderPartnerOptions(elements.returnPartnerList, partnerRecords, elements.returnPartnerInput.value);
 }
 
 function handleSupplierInput(elements) {
@@ -144,6 +219,38 @@ function handleProductStatusClick(event, elements) {
     row.remove();
     ensureAtLeastOneProductStatusRow(elements);
     updateProductStatusRowActions(elements);
+}
+
+function handleReturnProductStatusInput(event, elements) {
+    if (!event.target.classList.contains('return-product-code-input')) {
+        return;
+    }
+
+    renderProductOptions(elements.returnProductCodeList, productRecords, event.target.value);
+}
+
+function handleReturnProductStatusFocus(event, elements) {
+    if (!event.target.classList.contains('return-product-code-input')) {
+        return;
+    }
+
+    renderProductOptions(elements.returnProductCodeList, productRecords, event.target.value);
+}
+
+function handleReturnProductStatusClick(event, elements) {
+    const removeButton = event.target.closest('.return-product-status-remove');
+    if (!removeButton) {
+        return;
+    }
+
+    const row = removeButton.closest('.return-product-status-row');
+    if (!row) {
+        return;
+    }
+
+    row.remove();
+    ensureAtLeastOneReturnProductStatusRow(elements);
+    updateReturnProductStatusRowActions(elements);
 }
 
 function addProductStatusRow(elements, options = {}) {
@@ -187,6 +294,48 @@ function ensureAtLeastOneProductStatusRow(elements) {
     addProductStatusRow(elements);
 }
 
+function addReturnProductStatusRow(elements, options = {}) {
+    const row = document.createElement('div');
+    row.className = 'product-status-row return-product-status-row';
+    row.innerHTML = `
+        <div class="input-stack">
+            <input type="text" class="return-product-code-input" list="returnProductCodeList" placeholder="Chọn mã sản phẩm">
+        </div>
+        <div class="input-stack return-select-stack">
+            <select class="return-item-status-select">
+                ${buildReturnItemStatusOptionsMarkup()}
+            </select>
+        </div>
+        <div class="input-stack return-select-stack">
+            <select class="return-appearance-status-select">
+                ${buildReturnAppearanceOptionsMarkup()}
+            </select>
+        </div>
+        <button type="button" class="mini-ghost-button return-product-status-remove">Xóa</button>
+    `;
+
+    elements.returnProductStatusList.appendChild(row);
+    updateReturnProductStatusRowActions(elements);
+
+    if (options.focusCode) {
+        const codeInput = row.querySelector('.return-product-code-input');
+        if (codeInput) {
+            codeInput.focus();
+            renderProductOptions(elements.returnProductCodeList, productRecords, codeInput.value);
+        }
+    }
+
+    return row;
+}
+
+function ensureAtLeastOneReturnProductStatusRow(elements) {
+    if (elements.returnProductStatusList.querySelector('.return-product-status-row')) {
+        return;
+    }
+
+    addReturnProductStatusRow(elements);
+}
+
 function updateProductStatusRowActions(elements) {
     const rows = Array.from(elements.productStatusList.querySelectorAll('.product-status-row'));
     const shouldHideRemove = rows.length === 1;
@@ -200,7 +349,33 @@ function updateProductStatusRowActions(elements) {
     });
 }
 
+function updateReturnProductStatusRowActions(elements) {
+    const rows = Array.from(elements.returnProductStatusList.querySelectorAll('.return-product-status-row'));
+    const shouldHideRemove = rows.length === 1;
+
+    rows.forEach((row) => {
+        const removeButton = row.querySelector('.return-product-status-remove');
+        if (!removeButton) {
+            return;
+        }
+        removeButton.hidden = shouldHideRemove;
+    });
+}
+
 function resetForm(elements) {
+    if (getCurrentUiMode(elements) === UI_MODE_RETURN) {
+        elements.returnPartnerInput.value = '';
+        elements.returnNote.value = '';
+        elements.returnProductStatusList.innerHTML = '';
+        setRestoreStatus(elements, '');
+        addReturnProductStatusRow(elements);
+        renderProductOptions(elements.returnProductCodeList, productRecords, '');
+        renderPartnerOptions(elements.returnPartnerList, partnerRecords, '');
+        const firstReturnCodeInput = elements.returnProductStatusList.querySelector('.return-product-code-input');
+        firstReturnCodeInput?.focus();
+        return;
+    }
+
     elements.caseSelect.value = '';
     elements.partnerInput.value = '';
     elements.supplierInput.value = '';
@@ -223,6 +398,15 @@ function restoreFromText(elements) {
         return;
     }
 
+    if (getCurrentUiMode(elements) === UI_MODE_RETURN) {
+        restoreReturnFromText(rawText, elements);
+        return;
+    }
+
+    restoreReceiptFromText(rawText, elements);
+}
+
+function restoreReceiptFromText(rawText, elements) {
     const restored = parseRestoredText(rawText);
     if (!restored.caseValue) {
         setRestoreStatus(elements, 'Không nhận diện được Trường hợp từ note cũ.');
@@ -267,6 +451,45 @@ function restoreFromText(elements) {
 
     updateProductStatusRowActions(elements);
     setRestoreStatus(elements, `Đã điền lại ${restored.productEntries.length} sản phẩm.`);
+}
+
+function restoreReturnFromText(rawText, elements) {
+    const restored = parseReturnRestoredText(rawText);
+    if (!restored.productEntries.length) {
+        setRestoreStatus(elements, 'Không nhận diện được mã sản phẩm, tình trạng hàng và tình trạng vỏ, đai.');
+        return;
+    }
+
+    resetForm(elements);
+
+    elements.returnPartnerInput.value = restored.partnerValue;
+    elements.returnNote.value = restored.note;
+
+    const existingRow = elements.returnProductStatusList.querySelector('.return-product-status-row');
+    restored.productEntries.forEach((entry, index) => {
+        const row = index === 0
+            ? existingRow
+            : addReturnProductStatusRow(elements);
+        if (!row) {
+            return;
+        }
+
+        const codeInput = row.querySelector('.return-product-code-input');
+        const itemStatusSelect = row.querySelector('.return-item-status-select');
+        const appearanceStatusSelect = row.querySelector('.return-appearance-status-select');
+        if (codeInput) {
+            codeInput.value = entry.productCode;
+        }
+        if (itemStatusSelect) {
+            itemStatusSelect.value = entry.itemStatus;
+        }
+        if (appearanceStatusSelect) {
+            appearanceStatusSelect.value = entry.appearanceStatus;
+        }
+    });
+
+    updateReturnProductStatusRowActions(elements);
+    setRestoreStatus(elements, `Đã điền lại ${restored.productEntries.length} sản phẩm trả hàng.`);
 }
 
 function setRestoreStatus(elements, message) {
@@ -319,6 +542,58 @@ function parseRestoredText(rawText) {
         ...context,
         productEntries,
         shippingFeeDigits,
+        note: noteParts.join('\n')
+    };
+}
+
+function parseReturnRestoredText(rawText) {
+    const lines = rawText
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter(Boolean);
+
+    if (!lines.length) {
+        return {
+            partnerValue: '',
+            productEntries: [],
+            note: ''
+        };
+    }
+
+    const productEntries = [];
+    const noteParts = [];
+    let partnerValue = '';
+
+    lines.forEach((line) => {
+        const productEntry = parseReturnRestoredProductLine(line);
+        if (productEntry) {
+            productEntries.push(productEntry);
+            return;
+        }
+
+        const normalizedLine = normalizePartnerValue(line);
+        if (normalizedLine.startsWith('doi tac/gv:') || normalizedLine.startsWith('doi tac gv:')) {
+            const rawPartnerValue = line.replace(/^Đối tác\/GV:\s*/i, '').replace(/^Đối tác GV:\s*/i, '').trim();
+            partnerValue = getExactPartnerLabel(rawPartnerValue) || rawPartnerValue;
+            return;
+        }
+
+        if (normalizedLine.startsWith('ghi chu:')) {
+            noteParts.push(line.replace(/^Ghi chú:\s*/i, '').trim());
+            return;
+        }
+
+        if (!partnerValue) {
+            partnerValue = getExactPartnerLabel(line) || line;
+            return;
+        }
+
+        noteParts.push(line);
+    });
+
+    return {
+        partnerValue,
+        productEntries,
         note: noteParts.join('\n')
     };
 }
@@ -487,6 +762,36 @@ function parseRestoredProductLine(line) {
         productCode: resolveProductCode(productCodeRaw),
         status: resolvedStatus.status,
         hasUrbox: resolvedStatus.hasUrbox
+    };
+}
+
+function parseReturnRestoredProductLine(line) {
+    const trimmedLine = line.trim();
+    if (!trimmedLine) {
+        return null;
+    }
+
+    const cleanedLine = trimmedLine.replace(/\|\s*$/, '').trim();
+    const tokens = cleanedLine.split(' - ').map((token) => token.trim()).filter(Boolean);
+    if (tokens.length < 3) {
+        return null;
+    }
+
+    const productCodeRaw = tokens[0];
+    const itemStatusRaw = tokens[1];
+    const appearanceStatusRaw = tokens.slice(2).join(' - ');
+
+    const itemStatus = RETURN_ITEM_STATUS_OPTIONS.find((status) => normalizePartnerValue(status) === normalizePartnerValue(itemStatusRaw));
+    const appearanceStatus = RETURN_APPEARANCE_OPTIONS.find((status) => normalizePartnerValue(status) === normalizePartnerValue(appearanceStatusRaw));
+
+    if (!productCodeRaw || !itemStatus || !appearanceStatus) {
+        return null;
+    }
+
+    return {
+        productCode: resolveProductCode(productCodeRaw),
+        itemStatus,
+        appearanceStatus
     };
 }
 
@@ -697,11 +1002,7 @@ function refreshSupplierData(elements) {
             return response.text();
         })
         .then((csvText) => {
-            const records = parseCsvRecords(
-                csvText,
-                ['ma', 'manhacungcap', 'code', 'ma nha cung cap', 'ma_nha_cung_cap'],
-                normalizeSupplierValue
-            );
+            const records = parseSupplierCsvRecords(csvText);
             if (!records.length) {
                 throw new Error('Dữ liệu nhà cung cấp trống');
             }
@@ -788,11 +1089,7 @@ function fetchLocalSupplierCsv(elements) {
             return response.text();
         })
         .then((csvText) => {
-            const records = parseCsvRecords(
-                csvText,
-                ['ma', 'manhacungcap', 'code', 'ma nha cung cap', 'ma_nha_cung_cap'],
-                normalizeSupplierValue
-            );
+            const records = parseSupplierCsvRecords(csvText);
             if (!records.length) {
                 throw new Error('File nhà cung cấp trống');
             }
@@ -841,6 +1138,7 @@ function setPartnerRecords(records, elements) {
 
     buildPartnerIndex(partnerRecords);
     renderPartnerOptions(elements.partnerList, partnerRecords, elements.partnerInput.value);
+    renderPartnerOptions(elements.returnPartnerList, partnerRecords, elements.returnPartnerInput.value);
 }
 
 function buildPartnerIndex(records) {
@@ -943,6 +1241,7 @@ function setProductRecords(records, elements) {
 
     buildProductIndex(productRecords);
     renderProductOptions(elements.productCodeList, productRecords, getActiveProductInputValue(elements));
+    renderProductOptions(elements.returnProductCodeList, productRecords, getActiveReturnProductInputValue(elements));
 }
 
 function buildProductIndex(records) {
@@ -993,6 +1292,16 @@ function getActiveProductInputValue(elements) {
     }
 
     const firstInput = elements.productStatusList.querySelector('.product-code-input');
+    return firstInput ? firstInput.value : '';
+}
+
+function getActiveReturnProductInputValue(elements) {
+    const activeElement = document.activeElement;
+    if (activeElement && activeElement.classList?.contains('return-product-code-input')) {
+        return activeElement.value;
+    }
+
+    const firstInput = elements.returnProductStatusList.querySelector('.return-product-code-input');
     return firstInput ? firstInput.value : '';
 }
 
@@ -1067,6 +1376,69 @@ function parseCsvRecords(csvText, codeHeaders, normalizeValue) {
         const normalizedName = normalizeHeaderValue(name, normalizeValue);
         const isHeader = index === 0 && normalizedCodeHeaders.includes(normalizedCode) && normalizedName.includes('ten');
 
+        if (isHeader) {
+            return;
+        }
+
+        records.push({
+            code,
+            name
+        });
+    });
+
+    return records;
+}
+
+function parseSupplierCsvRecords(csvText) {
+    const lines = csvText.split(/\r?\n/).filter((line) => line.trim().length > 0);
+    const records = [];
+    const supplierHeaderNames = [
+        'ten nha cung cap',
+        'nha cung cap',
+        'ten ncc',
+        'supplier',
+        'supplier name'
+    ].map((header) => normalizeHeaderValue(header, normalizeSupplierValue));
+    const supplierCodeHeaders = [
+        'ma',
+        'manhacungcap',
+        'code',
+        'ma nha cung cap',
+        'ma_nha_cung_cap'
+    ].map((header) => normalizeHeaderValue(header, normalizeSupplierValue));
+
+    lines.forEach((line, index) => {
+        const fields = parseCsvLine(line).map((field) => field.trim());
+        if (!fields.length) {
+            return;
+        }
+
+        if (fields.length === 1) {
+            const name = fields[0];
+            const normalizedName = normalizeHeaderValue(name, normalizeSupplierValue);
+            const isHeader = index === 0 && supplierHeaderNames.includes(normalizedName);
+            if (isHeader || !name) {
+                return;
+            }
+
+            records.push({
+                code: '',
+                name
+            });
+            return;
+        }
+
+        const code = fields[0];
+        const name = fields[1];
+        if (!name) {
+            return;
+        }
+
+        const normalizedCode = normalizeHeaderValue(code, normalizeSupplierValue);
+        const normalizedName = normalizeHeaderValue(name, normalizeSupplierValue);
+        const isHeader = index === 0
+            && supplierCodeHeaders.includes(normalizedCode)
+            && supplierHeaderNames.includes(normalizedName);
         if (isHeader) {
             return;
         }
@@ -1285,6 +1657,18 @@ function buildActivationOptionsMarkup() {
     return [placeholderOption, ...options].join('');
 }
 
+function buildReturnItemStatusOptionsMarkup() {
+    const placeholderOption = '<option value="">Chọn tình trạng hàng</option>';
+    const options = RETURN_ITEM_STATUS_OPTIONS.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`);
+    return [placeholderOption, ...options].join('');
+}
+
+function buildReturnAppearanceOptionsMarkup() {
+    const placeholderOption = '<option value="">Tình trạng vỏ, đai</option>';
+    const options = RETURN_APPEARANCE_OPTIONS.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`);
+    return [placeholderOption, ...options].join('');
+}
+
 function escapeHtml(value) {
     return String(value)
         .replace(/&/g, '&amp;')
@@ -1295,6 +1679,21 @@ function escapeHtml(value) {
 }
 
 function copyText(elements) {
+    const mode = getCurrentUiMode(elements);
+    const textToCopy = mode === UI_MODE_RETURN
+        ? buildReturnNoteText(elements)
+        : buildReceiptNoteText(elements);
+
+    if (!textToCopy) {
+        return;
+    }
+
+    navigator.clipboard.writeText(textToCopy).catch((error) => {
+        console.error('Không thể sao chép', error);
+    });
+}
+
+function buildReceiptNoteText(elements) {
     const caseValue = elements.caseSelect.value;
     const caseLabel = CASE_COPY_LABELS[caseValue] || '';
     const partnerValue = resolvePartnerLabel(elements.partnerInput.value);
@@ -1304,18 +1703,25 @@ function copyText(elements) {
 
     if (!caseValue) {
         alert('Vui lòng chọn trường hợp.');
-        return;
+        elements.caseSelect.focus();
+        return '';
     }
 
     if (!filledProductStatusEntries.length) {
         alert('Vui lòng chọn ít nhất 1 mã sản phẩm và trạng thái.');
-        return;
+        const firstCodeInput = elements.productStatusList.querySelector('.product-code-input');
+        firstCodeInput?.focus();
+        return '';
     }
 
     const hasIncompleteRow = filledProductStatusEntries.some((entry) => !entry.productCodeInput || !entry.statusInput);
     if (hasIncompleteRow) {
         alert('Vui lòng chọn đủ mã sản phẩm và trạng thái cho từng dòng.');
-        return;
+        const firstIncompleteInput = Array.from(elements.productStatusList.querySelectorAll('.product-status-row'))
+            .map((row) => row.querySelector('.product-code-input'))
+            .find((input) => input && !input.value.trim());
+        firstIncompleteInput?.focus();
+        return '';
     }
 
     const contextParts = [];
@@ -1370,11 +1776,63 @@ function copyText(elements) {
         lines.push(footerParts.join(' | '));
     }
 
-    const textToCopy = lines.join('\n');
+    return lines.join('\n');
+}
 
-    navigator.clipboard.writeText(textToCopy).catch((error) => {
-        console.error('Không thể sao chép', error);
+function buildReturnNoteText(elements) {
+    const productEntries = Array.from(elements.returnProductStatusList.querySelectorAll('.return-product-status-row'))
+        .map((row) => {
+            const codeInput = row.querySelector('.return-product-code-input');
+            const itemStatusSelect = row.querySelector('.return-item-status-select');
+            const appearanceStatusSelect = row.querySelector('.return-appearance-status-select');
+
+            return {
+                productCodeInput: codeInput ? codeInput.value.trim() : '',
+                productCode: codeInput ? resolveProductCode(codeInput.value) : '',
+                itemStatus: itemStatusSelect ? itemStatusSelect.value.trim() : '',
+                appearanceStatus: appearanceStatusSelect ? appearanceStatusSelect.value.trim() : ''
+            };
+        });
+    const filledEntries = productEntries.filter((entry) => entry.productCodeInput || entry.itemStatus || entry.appearanceStatus);
+
+    if (!filledEntries.length) {
+        alert('Vui lòng chọn ít nhất 1 mã sản phẩm cho ghi chú trả hàng.');
+        const firstCodeInput = elements.returnProductStatusList.querySelector('.return-product-code-input');
+        firstCodeInput?.focus();
+        return '';
+    }
+
+    const hasIncompleteRow = filledEntries.some((entry) => !entry.productCodeInput || !entry.itemStatus || !entry.appearanceStatus);
+    if (hasIncompleteRow) {
+        alert('Vui lòng chọn đủ mã sản phẩm, tình trạng hàng và vỏ thùng, đai cho từng dòng.');
+        const firstIncompleteInput = Array.from(elements.returnProductStatusList.querySelectorAll('.return-product-status-row'))
+            .map((row) => row.querySelector('.return-product-code-input'))
+            .find((input) => input && !input.value.trim());
+        firstIncompleteInput?.focus();
+        return '';
+    }
+
+    const partnerValue = resolvePartnerLabel(elements.returnPartnerInput.value);
+    const noteValue = elements.returnNote.value.trim();
+    const lines = [];
+
+    if (!partnerValue) {
+        alert('Vui lòng nhập Đối tác trả hàng.');
+        elements.returnPartnerInput.focus();
+        return '';
+    }
+
+    filledEntries.forEach((entry) => {
+        lines.push(`${entry.productCode} - ${entry.itemStatus} - ${entry.appearanceStatus} | `);
     });
+
+    lines.push(`Đối tác/GV: ${partnerValue}`);
+
+    if (noteValue) {
+        lines.push(`Ghi chú: ${noteValue}`);
+    }
+
+    return lines.join('\n');
 }
 
 function compareValuesByLengthThenAlpha(firstValue, secondValue) {
